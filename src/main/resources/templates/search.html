@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org " xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Job Seeker Search</title>
+    <th:block th:replace="base :: head"></th:block>
+</head>
+<body>
+<th:block th:replace="base :: nav"></th:block>
+<br/><br/>
+
+<h1>Job Seeker Search</h1>
+<h2>Search by Username</h2>
+<form th:action="@{/search}" th:object="${person}" method="post">
+    <div><label> First Name : <input type="text" th:field="*{firstname}"/></label></div>
+    <div><label> Last Name : <input type="text" th:field="*{lastname}"/></label></div>
+    <div><label> Middle Initial (1 character max) : <input type="text" th:field="*{midinit}"/></label></div>
+    <div><input type="submit" value="Search"/></div>
+</form>
+</body>
+</html>
