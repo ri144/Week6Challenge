@@ -15,7 +15,7 @@
         <td>Email</td>
     </tr>
     <tr th:each="p : ${people}">
-        <td th:text="${p.firstname} + ' ' + ${p.midinit} + ' ' + ${p.lastname}"></td>
+        <td th:href="@{'/person/'+${p.firstname} + '/' + ${p.midinit} + '/' + ${p.lastname} + '/' + ${p.email}}" th:text="${p.firstname} + ' ' + ${p.midinit} + ' ' + ${p.lastname}"></td>
         <td th:text="${p.email}"></td>
     </tr>
 </table>

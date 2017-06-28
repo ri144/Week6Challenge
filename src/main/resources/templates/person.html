@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="www.thymeleaf.org " xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8"/>
-    <title>Title</title>
+    <title>Job Seeker Profile</title>
+    <th:block th:replace="base :: head"></th:block>
 </head>
 <body>
-
+<th:block th:replace="base :: nav"></th:block>
+<br/><br/>
+<div th:object="${person}">
+    <h1 th:text="*{firstname} + ' ' + *{midinit} + ' ' + *{lastname}"/><br/>
+    <h2 th:text="*{email}"/>
+</div>
+<h3>Education</h3>
+<div>
+    <p th:each="ed : ${edu}">
+        
+    </p>
+</div>
 </body>
 </html>

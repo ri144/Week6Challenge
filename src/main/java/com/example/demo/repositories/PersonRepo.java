@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface PersonRepo extends CrudRepository<Person, Integer> {
     public List<Person> findAllByFirstnameAndLastnameAndMidinit(String firstname, String lastname, String midinit);
+    public List<Person> findAllByFirstnameAndLastnameAndMidinitAndEmail(String firstname, String lastname, String midinit, String email);
 }

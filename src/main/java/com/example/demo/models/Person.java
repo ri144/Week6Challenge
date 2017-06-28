@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -16,12 +17,15 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @Size(max = 15)
+    @NotNull
     private String firstname;
     @Size(max = 15)
+    @NotNull
     private  String lastname;
     @Size(max = 1)
     private String midinit;
     @Size(max = 30)
+    @NotNull
     private String email;
 
     public int getId() {
