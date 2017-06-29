@@ -17,5 +17,23 @@
     <div><label> Middle Initial (1 character max) : <input type="text" th:field="*{midinit}"/></label></div>
     <div><input type="submit" value="Search"/></div>
 </form>
+<br/>
+<h2>Search by Company</h2>
+<form th:action="@{/searchC}" th:object="${exp}" method="post">
+    <div><label> Company : <input type="text" th:field="*{company}"/></label></div>
+    <div><input type="submit" value="Search"/></div>
+</form>
+<br/>
+<h2>Search by School</h2>
+<form th:action="@{/searchS}" th:object="${edu}" method="post">
+    <div><label> School : <input type="text" th:field="*{school}"/></label></div>
+    <div><input type="submit" value="Search"/></div>
+</form>
+<br/>
+<h2>Search by Skills</h2>
+<form th:action="@{/searchSk}" th:object="${skill}" method="post">
+    <div><label> Skill : <input type="text" th:field="*{skill}"/></label></div>
+    <div><input type="submit" value="Search"/></div>
+</form>
 </body>
 </html>

@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +41,9 @@ public class Controller {
     @RequestMapping("/")
     public String index(Model model){
         model.addAttribute("person", new Person());
+        model.addAttribute("exp", new Exper());
+        model.addAttribute("edu", new Edu());
+        model.addAttribute("skill", new Skills());
         return "search";
     }
 
@@ -51,21 +56,70 @@ public class Controller {
     public String search(@ModelAttribute Person person, Model model) {
         List<Person> peopleList = personRepo.findAllByFirstnameAndLastnameAndMidinit(person.getFirstname(),person.getLastname(),person.getMidinit());
         model.addAttribute("people", peopleList);
+        model.addAttribute("title", "User Name");
         return "results";
     }
 
-    @RequestMapping("/person/{first}/{mid}/{last}/{email}")
-    public String viewPerson(@PathVariable("first") String first,@PathVariable("mid") String mid, @PathVariable("last") String last,
-                             @PathVariable("email") String email, Model model){
-        Person p = personRepo.findAllByFirstnameAndLastnameAndMidinitAndEmail(first,last,mid,email).get(0);
-        List<Edu> eduList = eduRepo.findAllByPersonid(p.getId());
-        List<Exper> expList = experRepo.findAllByPersonid(p.getId());
-        List<Skills> skills = skillsRepo.findAllByPersonid(p.getId());
-        model.addAttribute("person", p);
+    @RequestMapping("/searchC")
+    public String searchC(@ModelAttribute Exper exper, Model model) {
+        List<Exper> expList = experRepo.findAllByCompany(exper.getCompany());
+        List<Person> peopleList = new ArrayList<Person>();
+        for (Exper e : expList){
+            Person p = personRepo.findAllById(e.getPersonid()).get(0);
+            if(!peopleList.contains(p)){
+                peopleList.add(p);
+            }
+        }
+        model.addAttribute("people", peopleList);
+        model.addAttribute("title", "Company");
+        return "results";
+    }
+
+    @RequestMapping("/searchS")
+    public String searchS(@ModelAttribute Edu edu, Model model) {
+        List<Edu> eduList = eduRepo.findAllBySchool(edu.getSchool());
+        List<Person> peopleList = new ArrayList<Person>();
+        for (Edu e : eduList){
+            Person p = personRepo.findAllById(e.getPersonid()).get(0);
+            if(!peopleList.contains(p)){
+                peopleList.add(p);
+            }
+        }
+        model.addAttribute("people", peopleList);
+        model.addAttribute("title", "School");
+        return "results";
+    }
+
+    @RequestMapping("/searchSk")
+    public String searchSk(@ModelAttribute Skills skills, Model model) {
+        List<Skills> skillList = skillsRepo.findAllBySkill(skills.getSkill());
+        List<Person> peopleList = new ArrayList<Person>();
+        for (Skills s : skillList){
+            Person p = personRepo.findAllById(s.getPersonid()).get(0);
+            if(!peopleList.contains(p)){
+                peopleList.add(p);
+            }
+        }
+        model.addAttribute("people", peopleList);
+        model.addAttribute("title", "School");
+        return "results";
+    }
+
+    @RequestMapping("/person/{id}")
+    public String viewPerson(@PathVariable("id") Integer id, Model model){
+        List<Person> people = personRepo.findAllById(id);
+        List<Edu> eduList = eduRepo.findAllByPersonid(id);
+        List<Exper> expList = experRepo.findAllByPersonid(id);
+        List<Skills> skills = skillsRepo.findAllByPersonid(id);
+        model.addAttribute("person", people);
         model.addAttribute("edu", eduList);
         model.addAttribute("exp", expList);
         model.addAttribute("skill", skills);
         return "person";
     }
 
+   /* @PostMapping("/endorse")
+    public void endorse(){
+
+    }*/
 }

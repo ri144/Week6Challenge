@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface ExperRepo extends CrudRepository<Exper, Integer>{
     public List<Exper> findAllByPersonid(Integer personid);
+    public List<Exper> findAllByCompany(String company);
 }

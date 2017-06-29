@@ -8,15 +8,31 @@
 <body>
 <th:block th:replace="base :: nav"></th:block>
 <br/><br/>
-<div th:object="${person}">
-    <h1 th:text="*{firstname} + ' ' + *{midinit} + ' ' + *{lastname}"/><br/>
-    <h2 th:text="*{email}"/>
+<div th:each="person : ${person}">
+    <h1 th:text="${person.firstname} + ' ' + ${person.midinit} + ' ' + ${person.lastname}"/>
+    <h2 th:text="${person.email}"/>
 </div>
+<br/>
 <h3>Education</h3>
-<div>
-    <p th:each="ed : ${edu}">
-        
-    </p>
+<div th:each="ed : ${edu}">
+    <p th:text="${ed.degreelevel} + ' in ' + ${ed.major} + ','"/>
+    <p th:text="${ed.school} + ', ' + ${ed.year}"/>
+</div>
+<br/>
+<h3>Work Experience</h3>
+<div th:each="job : ${exp}">
+    <p th:text="${job.position}"/>
+    <p th:text="${job.company} + ', ' + ${job.startmonth} + ' ' + ${job.startyear} + ' - ' + ${job.endmonth} + ' ' + ${job.endyear}"/>
+    <p th:text="'- Duty 1, ' + ${job.duty1}"/>
+    <p th:text="'- Duty 2, ' + ${job.duty2}"/>
+</div>
+<br/>
+<h3>Skills</h3>
+<div th:each="s : ${skill}">
+    <p th:text="${s.skill} + ', ' + ${s.proficiency}"/><!--+ ' Endorsements: ' + ${s.endorsements}"/>
+    <th:block sec:authorize="hasRole('ROLE_USER')">
+        <button type="button" th:action="@{/endorse}" method="post" class="btn btn-success">Endorse Skill</button>
+    </th:block></p>-->
 </div>
 </body>
 </html>

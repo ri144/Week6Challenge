@@ -8,15 +8,15 @@
 <body>
 <th:block th:replace="base :: nav"></th:block>
 <br/><br/>
-<h1>Query Results</h1>
+<h1 th:text="'Query Results for ' + ${title}"></h1>
 <table>
     <tr>
-        <td>Name </td>
-        <td>Email</td>
+        <td style="width: 50%;">Name </td>
+        <td style="width: 50%;">Email</td>
     </tr>
     <tr th:each="p : ${people}">
-        <td th:href="@{'/person/'+${p.firstname} + '/' + ${p.midinit} + '/' + ${p.lastname} + '/' + ${p.email}}" th:text="${p.firstname} + ' ' + ${p.midinit} + ' ' + ${p.lastname}"></td>
-        <td th:text="${p.email}"></td>
+        <td style="width: 50%;"><a th:href="@{'/person/'+ ${p.id}}" th:text="${p.firstname} + ' ' + ${p.midinit} + ' ' + ${p.lastname}"/></td>
+        <td style="width: 50%;" th:text="${p.email}"></td>
     </tr>
 </table>
 </body>

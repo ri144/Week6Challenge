@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface EduRepo extends CrudRepository<Edu, Integer>{
     public List<Edu> findAllByPersonid(Integer personid);
+    public List<Edu> findAllBySchool(String school);
 }
