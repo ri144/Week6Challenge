@@ -17,6 +17,7 @@
     <div><label> Middle Initial (1 character max) : <input type="text" th:field="*{midinit}"/></label></div>
     <div><input type="submit" value="Search"/></div>
 </form>
+<sec:authorize access="hasRole('ADMIN')">
 <br/>
 <h2>Search by Company</h2>
 <form th:action="@{/searchC}" th:object="${exp}" method="post">
@@ -35,5 +36,6 @@
     <div><label> Skill : <input type="text" th:field="*{skill}"/></label></div>
     <div><input type="submit" value="Search"/></div>
 </form>
+</sec:authorize>
 </body>
 </html>

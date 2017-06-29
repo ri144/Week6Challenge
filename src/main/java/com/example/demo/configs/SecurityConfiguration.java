@@ -3,6 +3,8 @@ package com.example.demo.configs;
 /**
  * Created by student on 6/28/17.
  */
+import com.example.demo.repositories.UserRepository;
+import com.example.demo.services.SSUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,58 +19,49 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
+    @Autowired private UserRepository userRepository;
+
+    @Override
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return new SSUserDetailsService(userRepository);
+    }
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers("/login").permitAll()
-                .anyRequest().authenticated();
-        http
-                .formLogin().failureUrl("/login?error")
-                .defaultSuccessUrl("/")
-                .loginPage("/login")
-                .permitAll()
+                .authorizeRequests()
+                //.antMatchers("/").permitAll()
+                //.antMatchers("/books/edit/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
                 .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
-                .permitAll();
+                .formLogin().loginPage("/login").permitAll()
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login").permitAll().permitAll()
+                .and()
+                .httpBasic();
     }
-/*
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
-    }*/
-
-    @Bean
-    public DataSource dataSource(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/Robert");
-        dataSource.setUsername("root");
-        dataSource.setPassword("password");
-
-        return dataSource;
-    }
-
-    @Bean
-    public DataSourceTransactionManager transactionManager(){
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(dataSource());
-        return transactionManager;
-
-    }
-    @Override
-    @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception{
-        auth.jdbcAuthentication().dataSource(dataSource()).usersByUsernameQuery("select username,password,enabled from users where username=?")
-                .authoritiesByUsernameQuery("select username,authority from authorities where username=?");
-
-
+        /*
+        auth.inMemoryAuthentication().withUser("user").password("password").roles("USER")
+                .and()
+                    .withUser("dave").password("begreat").roles("USER")
+                .and()
+                    .withUser("fi").password("becold").roles("USER")
+                .and()
+                .withUser("root").password("password").roles("ADMIN");
+         */
+        //auth.authenticationProvider(customAuthProvider);
+        auth.userDetailsService(userDetailsServiceBean());
     }
 
 }
