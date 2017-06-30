@@ -1,13 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.models.Edu;
-import com.example.demo.models.Exper;
-import com.example.demo.models.Person;
-import com.example.demo.models.Skills;
-import com.example.demo.repositories.EduRepo;
-import com.example.demo.repositories.ExperRepo;
-import com.example.demo.repositories.PersonRepo;
-import com.example.demo.repositories.SkillsRepo;
+import com.example.demo.models.*;
+import com.example.demo.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,7 +32,31 @@ public class Controller {
     @Autowired
     private ExperRepo experRepo;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping("/")
+    public String myprofile(Principal principal, Model model) {
+
+        User u = userRepository.findByUsername(principal.getName());
+        List<Person> people = personRepo.findAllByUserid(u.getId());
+        try{    // assume its a job seeker
+            Integer id = people.get(0).getId();
+            model.addAttribute("person", people);
+            model = getPersonDataById(id, model, true);
+            return "person";
+        }
+        catch(IndexOutOfBoundsException e){
+            //must be a recruiter if they dont have a corresponding profile
+            model.addAttribute("person", new Person());
+            model.addAttribute("exp", new Exper());
+            model.addAttribute("edu", new Edu());
+            model.addAttribute("skill", new Skills());
+            return "search";
+        }
+    }
+
+    @RequestMapping("/s")
     public String index(Model model){
         model.addAttribute("person", new Person());
         model.addAttribute("exp", new Exper());
@@ -50,6 +68,12 @@ public class Controller {
     @RequestMapping("/login")
     public String login(HttpSession session, Principal principal){
         return "login";
+    }
+
+    @RequestMapping("/create")
+    public String create(Model model){
+
+        return "create";
     }
 
     @RequestMapping("/search")
@@ -108,18 +132,116 @@ public class Controller {
     @RequestMapping("/person/{id}")
     public String viewPerson(@PathVariable("id") Integer id, Model model){
         List<Person> people = personRepo.findAllById(id);
-        List<Edu> eduList = eduRepo.findAllByPersonid(id);
-        List<Exper> expList = experRepo.findAllByPersonid(id);
-        List<Skills> skills = skillsRepo.findAllByPersonid(id);
         model.addAttribute("person", people);
-        model.addAttribute("edu", eduList);
-        model.addAttribute("exp", expList);
-        model.addAttribute("skill", skills);
+        model = getPersonDataById(id, model, false);
         return "person";
     }
 
-   /* @PostMapping("/endorse")
-    public void endorse(){
+    @RequestMapping("/edit/{id}")
+    public String editInfo(Model model, @PathVariable("id") Integer id){
+        List<Person> people = personRepo.findAllById(id);
+        model.addAttribute("p", people.get(0));
+        model = getPersonDataById(id, model, true);
+        return "recommend";
+    }
 
-    }*/
+    @PostMapping("/editProf/{id}")
+    public String persEdit(@ModelAttribute Person person, Model model, @PathVariable("id") Integer id){
+        person.setUserid(id);
+        personRepo.save(person);
+        model.addAttribute("person", person);
+        model = getPersonDataById(person.getId(), model, true);
+        return "person";
+    }
+
+    @RequestMapping("/editEdu/{id}")
+    public String eduEdit(@PathVariable("id") Integer id, Model model){
+        Edu ed = eduRepo.findAllByEduid(id).get(0);
+        model.addAttribute("ed", ed);
+        return "editedu";
+    }
+
+    @RequestMapping("/eduResult/{id}/{eduid}")
+    public String eduEdit(@ModelAttribute Edu edu, Model model, @PathVariable("id") Integer id, @PathVariable("eduid") Integer eduid){
+        edu.setPersonid(id);
+        edu.setEduid(eduid);
+        eduRepo.save(edu);
+        List<Person> people = personRepo.findAllById(id);
+        model.addAttribute("person", people.get(0));
+        model = getPersonDataById(id, model, true);
+        return "person";
+    }
+
+    @RequestMapping("/editExp/{id}")
+    public String expEdit(@PathVariable("id") Integer id, Model model){
+        Exper exp = experRepo.findAllByExpid(id).get(0);
+        model.addAttribute("exp", exp);
+        return "editexp";
+    }
+
+    @RequestMapping("/expResult/{id}/{expid}")
+    public String eduEdit(@ModelAttribute Exper exp, Model model, @PathVariable("id") Integer id, @PathVariable("expid") Integer expid){
+        exp.setPersonid(id);
+        exp.setExpid(expid);
+        experRepo.save(exp);
+        List<Person> people = personRepo.findAllById(id);
+        model.addAttribute("person", people.get(0));
+        model = getPersonDataById(id, model, true);
+        return "person";
+    }
+
+    @RequestMapping("/editSkill/{id}")
+    public String skillEdit(@PathVariable("id") Integer id, Model model){
+        Skills skill = skillsRepo.findAllBySkid(id).get(0);
+        model.addAttribute("skill", skill);
+        return "editskill";
+    }
+
+    @RequestMapping("/skillResult/{id}/{skid}")
+    public String eduEdit(@ModelAttribute Skills skills, Model model, @PathVariable("id") Integer id, @PathVariable("skid") Integer skid){
+        skills.setPersonid(id);
+        skills.setSkid(skid);
+        skillsRepo.save(skills);
+        List<Person> people = personRepo.findAllById(id);
+        model.addAttribute("person", people.get(0));
+        model = getPersonDataById(id, model, true);
+        return "person";
+    }
+
+    @RequestMapping("/addEdu/{id}")
+    public String addEdu(@PathVariable("id") Integer id, Model model){
+        Edu ed = new Edu();
+        ed.setPersonid(id);
+        model.addAttribute("ed", ed);
+        return "editedu";
+    }
+
+    @RequestMapping("/addWork/{id}")
+    public String addWork(@PathVariable("id") Integer id, Model model){
+        Exper exper = new Exper();
+        exper.setPersonid(id);
+        model.addAttribute("exp", exper);
+        return "editexp";
+    }
+
+    @RequestMapping("/addSkill/{id}")
+    public String addSkill(@PathVariable("id") Integer id, Model model){
+        Skills skills = new Skills();
+        skills.setPersonid(id);
+        model.addAttribute("skill", skills);
+        return "editskill";
+    }
+
+    private Model getPersonDataById(int id, Model model, boolean profile){
+        List<Edu> eduList = eduRepo.findAllByPersonid(id);
+        List<Exper> expList = experRepo.findAllByPersonid(id);
+        List<Skills> skills = skillsRepo.findAllByPersonid(id);
+        model.addAttribute("edu", eduList);
+        model.addAttribute("exp", expList);
+        model.addAttribute("skill", skills);
+        if(profile) {
+            model.addAttribute("edit", "Edit your profile.");
+        }
+        return model;
+    }
 }

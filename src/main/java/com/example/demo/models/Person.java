@@ -28,6 +28,8 @@ public class Person {
     @NotNull
     private String email;
 
+    private long userid;
+
     public int getId() {
         return id;
     }
@@ -66,5 +68,13 @@ public class Person {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public long getUserid() {
+        return userid;
+    }
+
+    public void setUserid(long userid) {
+        this.userid = userid;
     }
 }

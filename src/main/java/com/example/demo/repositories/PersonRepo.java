@@ -13,4 +13,5 @@ public interface PersonRepo extends CrudRepository<Person, Integer> {
     public List<Person> findAllByFirstnameAndLastnameAndMidinitAndEmail(String firstname, String lastname, String midinit, String email);
     public List<Person> findAllById(Integer id);
     public List<Person> findAllByEmail(String email);
+    public List<Person> findAllByUserid(Long userid);
 }

@@ -34,5 +34,8 @@
         <button type="button" th:action="@{/endorse}" method="post" class="btn btn-success">Endorse Skill</button>
     </th:block></p>-->
 </div>
+<div th:each="p : ${person}">
+<a th:href="@{'/edit/' + ${p.id}}" th:text="${edit}"></a>
+</div>
 </body>
 </html>
