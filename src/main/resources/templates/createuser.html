@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org " xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <th:block th:replace="base :: head"></th:block>
+</head>
+<body>
+<th:block th:replace="base :: nav"></th:block>
+<br/><br/>
+<form th:action="/newuser" th:object="${person}" method="post">
+    <div><label><input type="text" th:field="*{firstname}"/></label></div>
+    <div><label><input type="text" th:field="*{lastname}" /></label></div>
+    <div><label><input type="text" th:field="*{midinit}" /></label></div>
+    <div><label><input type="text" th:field="*{email}" /></label></div>
+    <div><input type="submit" value="Submit Edit"/></div>
+</form>
+</body>
+</html>

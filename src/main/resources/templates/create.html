@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org " xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Create New Account</title>
+    <th:block th:replace="base :: head"></th:block>
+</head>
+<body>
+<th:block th:replace="base :: nav"></th:block>
+<br/><br/><br/>
+<form th:action="@{'/createNew/' + ${next}}" th:object="${user}" method="post">
+    <div class="form-group">
+        <label>Account Name</label>
+        <input type="text" th:field="*{username}" class="form-control" id="exampleInputEmail1" placeholder="User"/>
+    </div>
+    <div class="form-group">
+        <label>Account Password</label>
+        <input type="password" th:field="*{password}" class="form-control" id="exampleInputPassword1" placeholder="Password"/>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+</body>
+</html>

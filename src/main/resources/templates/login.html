@@ -31,7 +31,8 @@
         <div><input type="submit" value="Sign In"/></div>
     </form>
     <br/>
-    <a th:href="@{'/create}" th:text="'Create New Account!'"/>
+    <a th:href="@{'/create'}" th:text="'Create New Recruiter Account!'"/>
+    <a th:href="@{/'createSearch'}" th:text="'Create New Job Searcher Account!'"/>
 </div><!-- /.container -->
 
 <th:block th:replace="base :: footlinks"></th:block>

@@ -3,11 +3,9 @@ package com.example.demo.controllers;
 import com.example.demo.models.*;
 import com.example.demo.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
@@ -34,6 +32,9 @@ public class Controller {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepo roleRepo;
 
     @RequestMapping("/")
     public String myprofile(Principal principal, Model model) {
@@ -72,8 +73,35 @@ public class Controller {
 
     @RequestMapping("/create")
     public String create(Model model){
-
+        model.addAttribute("user", new User());
+        model.addAttribute("next", "recruiter");
         return "create";
+    }
+
+    @RequestMapping("/createSearch")
+    public String createSearcher(Model model){
+        model.addAttribute("next", "seeker");
+        return "create";
+    }
+
+    @PostMapping("newuser")
+    public String newUser(@ModelAttribute Person person){
+        personRepo.save(person);
+        return "login";
+    }
+
+    @PostMapping("createNew/{next}")
+    public String newAccount(@ModelAttribute User user, Model model, @PathVariable("next") String next){
+        if(next.equals("recruiter")) {
+            user.setEnabled(true);
+            user.setRoles(roleRepo.findAllById(2l));
+            userRepository.save(user);
+            return "login";
+        }
+        else{
+            model.addAttribute("person", new Person());
+            return "createuser";
+        }
     }
 
     @RequestMapping("/search")
